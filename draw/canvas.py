@@ -1,4 +1,5 @@
 import arcade
+import colors
 
 
 def draw(SCREEN_WIDTH, SCREEN_HEIGHT):
@@ -7,7 +8,7 @@ def draw(SCREEN_WIDTH, SCREEN_HEIGHT):
 	    align="center",
 	    start_x=SCREEN_WIDTH / 2 - 200 / 2,
 	    start_y=SCREEN_HEIGHT - 40,
-	    color=arcade.color.WHITE_SMOKE,
+	    color=colors.WHITE,
 	    font_name="PressStart2P-Regular",
 	    width=200,
 	    font_size=12)

@@ -19,24 +19,25 @@ def generate_map(game):
 		process = value['process']
 		if process is not None:
 			if process == 1:
-				name = "salameche"
+				pokemon_type = "salameche"
 			elif process == 2:
-				name = "bulbizarre"
+				pokemon_type = "bulbizarre"
 			else:
 				raise ValueError(
 				    f"OWNER OF CASE `{index}` is `{process}`, it is not known!"
 				)
-			pokemon = sprites.pokemon(name, x, y)
+			pokemon = sprites.pokemon(
+			    pokemon_type=pokemon_type, id=None, x=x, y=y)
 			map_sprites.append(pokemon)
 		elif owner is not None:
 			if owner == 1:
-				name = "fire"
+				energy_type = "fire"
 			elif owner == 2:
-				name = "plant"
+				energy_type = "plant"
 			else:
 				raise ValueError(
 				    f"OWNER OF CASE `{index}` is `{owner}`, it is not known!")
-			energy = sprites.energy(name, x, y)
+			energy = sprites.energy(energy_type, x, y)
 			map_sprites.append(energy)
 
 	return map_sprites

@@ -1,19 +1,20 @@
 import arcade
 
 
-def energy(name, x, y):
+def energy(energy_type, x, y):
 	return arcade.Sprite(
-	    filename=f"resources/energies/{name}.png",
+	    filename=f"resources/energies/{energy_type}.png",
 	    scale=1,
 	    center_x=x,
 	    center_y=y)
 
 
 class pokemon(arcade.Sprite):
-	def __init__(self, name, x, y):
+	def __init__(self, pokemon_type, id, x, y):
 		super().__init__()
 		texture = arcade.load_texture(
-		    f"resources/pokemons/{name}.png", mirrored=True, scale=1)
+		    f"resources/pokemons/{pokemon_type}.png", mirrored=True, scale=1)
+		self.id = id
 		self.textures.append(texture)
 		self.set_texture(0)
 		self.scale = 1.5

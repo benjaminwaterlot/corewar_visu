@@ -1,8 +1,10 @@
 import arcade
-import draw.canvas
+# import draw.canvas
+from draw import canvas
 from helpers import fps_logger
 from game_map import generate_map
 import colors
+from parser import parse_next, parse_start
 
 
 class MyGame(arcade.Window):
@@ -18,16 +20,18 @@ class MyGame(arcade.Window):
 		arcade.set_background_color(colors.BROWN)
 		self.map_sprites = None
 
-		self.set_fullscreen()
+		# self.set_fullscreen()
 		width, height = self.get_size()
 		self.set_viewport(0, width, 0, height)
 
 	def setup(self):
+		# next_cycle = parse_next()
+		start_infos = parse_start()
 		self.map_sprites = generate_map(self)
 
 	def on_draw(self):
 		arcade.start_render()
-		draw.canvas.draw(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+		canvas.draw(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
 		self.map_sprites.draw()
 
 	def on_update(self, delta_time):

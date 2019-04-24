@@ -1,4 +1,5 @@
 import arcade
+from textures import IMAGES
 
 # def energy(energy_type, x, y):
 # 	return arcade.Sprite(
@@ -11,11 +12,19 @@ import arcade
 class energy(arcade.Sprite):
 	def __init__(self, energy_type, x, y):
 		super().__init__()
-		texture = arcade.load_texture(
-		    f"resources/energies/{energy_type}.png", scale=1)
+		# texture = arcade.load_texture(
+		#     f"resources/energies/{energy_type}.png", scale=1)
+
+		textures = IMAGES
+		# textures_loaded = arcade.load_textures(textures)
+		for texture in textures:
+			texture_loaded = arcade.load_texture(file_name=texture)
+			self.textures.append(texture_loaded)
+		# self.textures.append(textures)
+
 		self.id = id
-		self.textures.append(texture)
-		self.set_texture(0)
+		# self.textures.append(texture)
+		self.set_texture(energy_type)
 		self.scale = 1
 		self.center_x = x
 		self.center_y = y

@@ -4,8 +4,8 @@ class ENERGY():
 
 
 class POKEMON():
-	salameche = 3
-	bulbizarre = 4
+	bulbizarre = 3
+	salameche = 4
 
 
 EMPTY = 0

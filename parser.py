@@ -1,18 +1,32 @@
 import sys
+from textures import ENERGY, POKEMON, EMPTY
 
 
-def parse_next():
+def parse_next(number_to_parse):
 	init = sys.stdin.readline().rstrip()
 
+	if init == "":
+		print("GAME ENDED")
+		exit(0)
 	if init[0] != 'C':
 		raise ValueError(f"Unexpected input ! [{init}]")
 
 	cycle = [init]
-	data = sys.stdin.readline().rstrip()
-	while data != "":
-		cycle.append(data)
-		data = sys.stdin.readline().rstrip()
+	# for i in range(number_to_parse):
+	# 	data = sys.stdin.readline().rstrip()
+	# 	while data != "":
+	# 		cycle.append(data)
+	# 		data = sys.stdin.readline().rstrip()
+	for line in sys.stdin:
+		if line == "\n":
+			number_to_parse -= 1
+			if number_to_parse <= 0:
+				break
+			else:
+				continue
+		cycle.append(line.rstrip())
 
+	# print(cycle)
 	return cycle
 
 
@@ -34,7 +48,13 @@ def parse_start():
 
 		elif line[0] == 'P':
 			(code, ref, location, champion) = line.split()
-			processes.append({'champion': champion, 'location': location})
+			pokemon = POKEMON.salameche if int(
+			    champion) is 1 else POKEMON.bulbizarre
+			processes.append({
+			    'champion': int(champion),
+			    'location': int(location),
+			    'pokemon': pokemon
+			})
 
 		line = sys.stdin.readline().rstrip()
 

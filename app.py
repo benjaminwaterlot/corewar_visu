@@ -6,6 +6,7 @@ from game_map import generate_map
 import colors
 import const
 from parser import parse_next, parse_start
+from textures import ENERGY, POKEMON, EMPTY
 
 
 class MyGame(arcade.Window):
@@ -36,17 +37,19 @@ class MyGame(arcade.Window):
 	def on_update(self, delta_time):
 		fps_logger(self, delta_time)
 
-		# for i in range(30):
 		obsolete_sprites = []
-		updates = parse_next()
-		if updates == []:
-			return
+		# for i in range(10):
+		updates = parse_next(10)
+		# if updates == []:
+		# 	return
 		# print(updates)
 
 		for update in updates:
+			# print(f"[{update}]")
 			update = update.split()
 			if update[0] == 'C':
 				self.cycle = update[1]
+
 			if update[0] == 'M':
 				location = int(update[1])
 				champion = int(update[2])
@@ -56,6 +59,30 @@ class MyGame(arcade.Window):
 				    'location': location,
 				    'type': 'energy'
 				})
+
+			if update[0] == 'P':
+				process_id = int(update[1])
+				process_location = int(update[2])
+				process_champion = int(update[3])
+				if process_id > len(self.processes):
+					pokemon = POKEMON.salameche if process_champion is 1 else POKEMON.bulbizarre
+					self.processes.append({
+					    'champion': process_champion,
+					    'location': process_location,
+					    'pokemon': pokemon
+					})
+					self.map_sprites[process_location].set_texture(pokemon)
+				else:
+					process = self.processes[process_id - 1]
+					# obsolete_sprites.append({
+					#     'location': process['location'],
+					#     'type': 'energy'
+					# })
+					self.map_sprites[process['location']].set_texture(
+					    self.map_owners[process['location']])
+					process['location'] = process_location
+					self.map_sprites[process_location].set_texture(
+					    process['pokemon'])
 
 		for sprite in obsolete_sprites:
 			if sprite['type'] == 'energy':

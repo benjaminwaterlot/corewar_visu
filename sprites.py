@@ -10,10 +10,10 @@ from textures import IMAGES
 
 
 class entity(arcade.Sprite):
-	def __init__(self, energy_type, x, y):
+	def __init__(self, entity, x, y):
 		super().__init__()
 		# texture = arcade.load_texture(
-		#     f"resources/energies/{energy_type}.png", scale=1)
+		#     f"resources/energies/{entity}.png", scale=1)
 
 		textures = IMAGES
 		# textures_loaded = arcade.load_textures(textures)
@@ -24,10 +24,12 @@ class entity(arcade.Sprite):
 
 		self.id = id
 		# self.textures.append(texture)
-		self.set_texture(energy_type)
+		self.set_texture(entity)
 		self.scale = 1
 		self.center_x = x
 		self.center_y = y
+		# if entity == 0:
+		# self.alpha = 0
 
 
 # class pokemon(arcade.Sprite):

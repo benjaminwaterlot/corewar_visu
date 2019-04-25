@@ -38,14 +38,9 @@ class MyGame(arcade.Window):
 		fps_logger(self, delta_time)
 
 		obsolete_sprites = []
-		# for i in range(10):
-		updates = parse_next(10)
-		# if updates == []:
-		# 	return
-		# print(updates)
+		updates = parse_next(const.SPEED)
 
 		for update in updates:
-			# print(f"[{update}]")
 			update = update.split()
 			if update[0] == 'C':
 				self.cycle = update[1]

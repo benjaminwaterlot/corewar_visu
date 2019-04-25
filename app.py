@@ -4,13 +4,13 @@ from draw import canvas
 from helpers import fps_logger
 from game_map import generate_map
 import colors
+import const
 from parser import parse_next, parse_start
 
 
 class MyGame(arcade.Window):
-	MARGIN = 20
-	SCREEN_WIDTH = 2560
-	SCREEN_HEIGHT = 1440
+	SCREEN_WIDTH = const.SCREEN_WIDTH
+	SCREEN_HEIGHT = const.SCREEN_HEIGHT
 	SCREEN_TITLE = "Corewar"
 	frame = 0
 
@@ -19,28 +19,34 @@ class MyGame(arcade.Window):
 		                 self.SCREEN_TITLE)
 		arcade.set_background_color(colors.BROWN)
 		self.map_sprites = None
+		self.cycle = "0"
 
-		# self.set_fullscreen()
 		width, height = self.get_size()
 		self.set_viewport(0, width, 0, height)
 
 	def setup(self):
 		self.start_infos = parse_start()
-		self.map_owners = self.start_infos['starting_map']
+		self.map_owners = [
+		    int(case) if case.isdigit() else None
+		    for case in self.start_infos['starting_map']
+		]
 		self.processes = self.start_infos['processes']
 		self.map_sprites = generate_map(self)
 
 	def on_update(self, delta_time):
 		fps_logger(self, delta_time)
 
+		# for i in range(30):
 		obsolete_sprites = []
 		updates = parse_next()
 		if updates == []:
 			return
-		print(updates)
+		# print(updates)
 
 		for update in updates:
 			update = update.split()
+			if update[0] == 'C':
+				self.cycle = update[1]
 			if update[0] == 'M':
 				location = int(update[1])
 				champion = int(update[2])
@@ -51,18 +57,17 @@ class MyGame(arcade.Window):
 				    'type': 'energy'
 				})
 
-				# TODO : Est-ce que "location" est un index démarrant à 0 ou à 1 ?
-
 		for sprite in obsolete_sprites:
 			if sprite['type'] == 'energy':
 				update_location = sprite['location']
-				self.map_sprites[update_location].set_texture(2)
-				# self.map_sprites[update_location] = self.map_owners[
-				#     update_location]
+				champion_on_case = self.map_owners[update_location]
+				if champion_on_case == 'x':
+					return
+				self.map_sprites[update_location].set_texture(champion_on_case)
 
 	def on_draw(self):
 		arcade.start_render()
-		canvas.draw(self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+		canvas.draw(self)
 		self.map_sprites.draw()
 
 

@@ -1,8 +1,14 @@
-empty = 0
-fire = 1
-plant = 2
-salameche = 3
-bulbizarre = 4
+class ENERGY():
+	fire = 1
+	plant = 2
+
+
+class POKEMON():
+	salameche = 3
+	bulbizarre = 4
+
+
+EMPTY = 0
 
 IMAGES = [
     "resources/empty.png", "resources/energies/fire.png",

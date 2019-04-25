@@ -7,8 +7,8 @@ def parse_next():
 	if init[0] != 'C':
 		raise ValueError(f"Unexpected input ! [{init}]")
 
+	cycle = [init]
 	data = sys.stdin.readline().rstrip()
-	cycle = []
 	while data != "":
 		cycle.append(data)
 		data = sys.stdin.readline().rstrip()

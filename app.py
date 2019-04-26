@@ -40,52 +40,62 @@ class MyGame(arcade.Window):
 		obsolete_sprites = []
 		updates = parse_next(const.SPEED)
 
+		print((updates))
 		for update in updates:
 			update = update.split()
-			if update[0] == 'C':
+			update_type = update[0]
+
+			if update_type == 'C':
 				self.cycle = update[1]
 
-			if update[0] == 'M':
+			elif update_type == 'M':
 				location = int(update[1])
 				champion = int(update[2])
 
 				self.map_owners[location] = champion
-				obsolete_sprites.append({
-				    'location': location,
-				    'type': 'energy'
-				})
+				champion_on_case = self.map_owners[location]
+				if champion_on_case == None:
+					raise ValueError(
+					    f"ERROR in cycle {self.cycle}: CHAMPION's TEXTURE IS NONETYPE, at case {location}"
+					)
+				self.map_sprites[location].set_texture(champion_on_case)
 
-			if update[0] == 'P':
+			elif update_type == 'P':
+				if (not update[2].isdigit()):
+					raise ValueError(
+					    f"This update is not correct ! >> {update}")
 				process_id = int(update[1])
-				process_location = int(update[2])
+				process_destination = int(update[2])
 				process_champion = int(update[3])
+
 				if process_id > len(self.processes):
 					pokemon = POKEMON.salameche if process_champion is 1 else POKEMON.bulbizarre
 					self.processes.append({
 					    'champion': process_champion,
-					    'location': process_location,
+					    'location': process_destination,
 					    'pokemon': pokemon
 					})
-					self.map_sprites[process_location].set_texture(pokemon)
+					self.map_sprites[process_destination].set_texture(pokemon)
 				else:
 					process = self.processes[process_id - 1]
-					# obsolete_sprites.append({
-					#     'location': process['location'],
-					#     'type': 'energy'
-					# })
-					self.map_sprites[process['location']].set_texture(
-					    self.map_owners[process['location']])
-					process['location'] = process_location
-					self.map_sprites[process_location].set_texture(
-					    process['pokemon'])
+					process_location = process['location']
+					# if self.map_owners[process_location] == None:
+					# 	raise ValueError(
+					# 	    f"ERROR in cycle {self.cycle}: PROCESS's DEPARTURE LOCATION's TEXTURE IS NONETYPE, at case {process_location}, values around being : {[self.map_owners[process_location + i] for i in range(-20, 40)]}"
+					# 	)
 
-		for sprite in obsolete_sprites:
-			if sprite['type'] == 'energy':
-				update_location = sprite['location']
-				champion_on_case = self.map_owners[update_location]
-				if champion_on_case == 'x':
-					return
-				self.map_sprites[update_location].set_texture(champion_on_case)
+					if self.map_owners[process_location]:
+						self.map_sprites[process_location].set_texture(
+						    self.map_owners[process_location])
+
+					# if process['pokemon'] == None:
+					# 	raise ValueError(
+					# 	    f"ERROR in cycle {self.cycle}: PROCESS's POKEMON TEXTURE IS NONETYPE, at case {process_destination}"
+					# 	)
+					process['location'] = process_destination
+					if process['pokemon']:
+						self.map_sprites[process_destination].set_texture(
+						    process['pokemon'])
 
 	def on_draw(self):
 		arcade.start_render()

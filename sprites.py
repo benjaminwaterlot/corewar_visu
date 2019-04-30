@@ -10,20 +10,20 @@ from textures import IMAGES
 
 
 class entity(arcade.Sprite):
-	def __init__(self, entity, x, y):
+	def __init__(self, textures, entity, x, y):
 		super().__init__()
 		# texture = arcade.load_texture(
 		#     f"resources/energies/{entity}.png", scale=1)
 
-		textures = IMAGES
 		# textures_loaded = arcade.load_textures(textures)
 		for texture in textures:
-			texture_loaded = arcade.load_texture(file_name=texture)
-			self.textures.append(texture_loaded)
+			# texture_loaded = arcade.load_texture(file_name=texture)
+			self.textures.append(texture)
 		# self.textures.append(textures)
 
 		self.id = id
 		# self.textures.append(texture)
+		print(self.textures)
 		self.set_texture(entity)
 		self.scale = 1
 		self.center_x = x

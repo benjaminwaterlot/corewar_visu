@@ -4,17 +4,22 @@ import const
 from textures import ENERGY, POKEMON, EMPTY
 
 
-def generate_map(game):
-	GRID_X = 85
+def get_grid_coords(index):
+	x = const.MARGIN * 2 + index * const.POKEMON_SIZE % (
+	    const.GRID_X * const.POKEMON_SIZE)
+	y = const.SCREEN_HEIGHT - 200 - int(
+	    index / const.GRID_X) * const.POKEMON_SIZE
+	return (x, y)
 
-	POKEMON_SIZE = 24
+
+def generate_map(game):
 	map_sprites = arcade.SpriteList()
 
 	map_infos = get_map_from_owners(game.map_owners)
+	# print(game.textures)
 
 	for (index, value) in enumerate(map_infos):
-		x = const.MARGIN * 2 + index * POKEMON_SIZE % (GRID_X * POKEMON_SIZE)
-		y = game.SCREEN_HEIGHT - 200 - int(index / GRID_X) * POKEMON_SIZE
+		(x, y) = get_grid_coords(index)
 
 		owner = value['player']
 		process = value['process']
@@ -28,7 +33,8 @@ def generate_map(game):
 				raise ValueError(
 				    f"OWNER OF CASE `{index}` is `{process}`, it is not known!"
 				)
-			pokemon = sprites.entity(entity=pokemon_type, x=x, y=y)
+			pokemon = sprites.entity(
+			    textures=game.textures, entity=pokemon_type, x=x, y=y)
 			map_sprites.append(pokemon)
 
 		elif owner is not None:
@@ -39,11 +45,13 @@ def generate_map(game):
 			else:
 				raise ValueError(
 				    f"OWNER OF CASE `{index}` is `{owner}`, it is not known!")
-			energy = sprites.entity(entity, x, y)
+			energy = sprites.entity(
+			    textures=game.textures, entity=entity, x=x, y=y)
 			map_sprites.append(energy)
 
 		else:
-			empty = sprites.entity(entity=EMPTY, x=x, y=y)
+			empty = sprites.entity(
+			    textures=game.textures, entity=EMPTY, x=x, y=y)
 			map_sprites.append(empty)
 
 	for process in game.processes:

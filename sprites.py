@@ -1,5 +1,5 @@
 import arcade
-from textures import IMAGES
+from helpers import get_grid_coords
 
 # def energy(energy_type, x, y):
 # 	return arcade.Sprite(
@@ -9,11 +9,11 @@ from textures import IMAGES
 # 	    center_y=y)
 
 
-class entity(arcade.Sprite):
-	def __init__(self, textures, entity, x, y):
+class Terrain(arcade.Sprite):
+	def __init__(self, textures, Terrain, x, y):
 		super().__init__()
 		# texture = arcade.load_texture(
-		#     f"resources/energies/{entity}.png", scale=1)
+		#     f"resources/energies/{Terrain}.png", scale=1)
 
 		# textures_loaded = arcade.load_textures(textures)
 		for texture in textures:
@@ -23,12 +23,24 @@ class entity(arcade.Sprite):
 
 		self.id = id
 		# self.textures.append(texture)
-		print(self.textures)
-		self.set_texture(entity)
+		self.set_texture(Terrain)
 		self.scale = 1
 		self.center_x = x
 		self.center_y = y
-		# if entity == 0:
+		# if Terrain == 0:
+		# self.alpha = 0
+
+
+class pokemon(arcade.Sprite):
+	def __init__(self, texture, location):
+		super().__init__()
+		# texture = arcade.load_texture(
+		#     f"resources/energies/{Terrain}.png", scale=1)
+
+		self.textures.append(texture)
+		self.set_texture(0)
+		self.scale = 1.2
+		(self.center_x, self.center_y) = get_grid_coords(location)
 		# self.alpha = 0
 
 

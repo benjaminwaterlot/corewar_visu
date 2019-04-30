@@ -1,5 +1,6 @@
 import sys
-from textures import ENERGY, POKEMON, EMPTY
+
+# from textures import ENERGY, POKEMON, EMPTY
 
 
 def parse_next(number_to_parse):
@@ -48,12 +49,12 @@ def parse_start():
 
 		elif line[0] == 'P':
 			(code, ref, location, champion) = line.split()
-			pokemon = POKEMON.salameche if int(
-			    champion) is 1 else POKEMON.bulbizarre
+			# pokemon = POKEMON.salameche if int(
+			#     champion) is 1 else POKEMON.bulbizarre
 			processes.append({
 			    'champion': int(champion),
 			    'location': int(location),
-			    'pokemon': pokemon
+			    'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
 			})
 
 		line = sys.stdin.readline().rstrip()

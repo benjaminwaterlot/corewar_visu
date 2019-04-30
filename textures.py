@@ -11,27 +11,27 @@ class Pokemon():
 		print("INITIALIZING POKEMONS")
 
 
-pokemons = [
-    "resources/pokemons/salameche.png", "resources/pokemons/bulbizarre.png"
-]
-
 EMPTY = 0
-
-images = [
-    "resources/empty.png", "resources/energies/fire.png",
-    "resources/energies/plant.png"
-]
 
 
 def load_terrain_textures():
 	loaded = []
-	for texture in images:
-		loaded.append(arcade.load_texture(texture))
+	terrains = [
+	    "resources/empty.png", "resources/energies/fire.png",
+	    "resources/energies/plant.png"
+	]
+
+	for terrain in terrains:
+		loaded.append(arcade.load_texture(terrain))
 	return loaded
 
 
 def load_pokemon_textures():
 	loaded = []
-	for texture in pokemons:
-		loaded.append(arcade.load_texture(texture))
+	pokemons = [
+	    "resources/empty.png", "resources/pokemons/salameche.png",
+	    "resources/pokemons/bulbizarre.png"
+	]
+	for pokemon in pokemons:
+		loaded.append(arcade.load_texture(pokemon))
 	return loaded

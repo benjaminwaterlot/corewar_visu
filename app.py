@@ -45,9 +45,6 @@ class MyGame(arcade.Window):
 		]
 		self.terrain_sprites = game_map.generate_map(self)
 
-		# for pokemon in textures.pokemons:
-		# 	self.proc_sprites.append(arcade.load_texture(pokemon))
-
 	def on_update(self, delta_time):
 		fps_logger(self, delta_time)
 
@@ -64,6 +61,9 @@ class MyGame(arcade.Window):
 			elif update_type == 'M':
 				location = int(update[1])
 				champion = int(update[2])
+
+				if self.terrain_owners[location] == champion:
+					break
 
 				self.terrain_owners[location] = champion
 				champion_on_case = self.terrain_owners[location]
@@ -85,7 +85,7 @@ class MyGame(arcade.Window):
 
 				if process_destination:
 					if process_id > len(self.pokemons_sprites):
-						texture = self.pokemon_textures[process_champion - 1]
+						texture = self.pokemon_textures[process_champion]
 						self.pokemons_sprites.append(
 						    sprites.pokemon(texture, process_destination))
 					else:

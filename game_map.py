@@ -1,7 +1,6 @@
 import arcade
 import sprites
 import const
-# from textures import ENERGY
 import textures
 from helpers import get_grid_coords
 
@@ -10,9 +9,8 @@ def generate_process_sprites(game):
 	process_sprites = arcade.SpriteList()
 
 	for process in game.pokemons:
-		sprite = sprites.pokemon(
-		    game.pokemon_textures[process['champion'] - 1],
-		    process['location'])
+		sprite = sprites.pokemon(game.pokemon_textures[process['champion']],
+		                         process['location'])
 		process_sprites.append(sprite)
 
 	return process_sprites
@@ -26,20 +24,6 @@ def generate_map(game):
 		(x, y) = get_grid_coords(index)
 
 		owner = value['player']
-		# process = value['process']
-
-		# if process is not None:
-		# 	if process == 1:
-		# 		pokemon_type = POKEMON.salameche
-		# 	elif process == 2:
-		# 		pokemon_type = POKEMON.bulbizarre
-		# 	else:
-		# 		raise ValueError(
-		# 		    f"OWNER OF CASE `{index}` is `{process}`, it is not known!"
-		# 		)
-		# 	pokemon = sprites.Terrain(
-		# 	    textures=game.terrain_textures, Terrain=pokemon_type, x=x, y=y)
-		# 	terrain_sprites.append(pokemon)
 
 		if owner is not None:
 			if owner == 1:
@@ -60,11 +44,6 @@ def generate_map(game):
 			    x=x,
 			    y=y)
 			terrain_sprites.append(empty)
-
-	# for process in game.pokemons:
-	# 	print(process)
-	# 	terrain_sprites[process['location']].set_texture(
-	# 	    POKEMON.bulbizarre - 1 + process['champion'])
 
 	return terrain_sprites
 

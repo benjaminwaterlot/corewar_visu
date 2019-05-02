@@ -14,17 +14,29 @@ def draw_champions(game:MyGame, canvas):
 			text=champion.name,
 			align="center",
 			start_x=const.SCREEN_WIDTH - 320,
-			start_y=const.SCREEN_HEIGHT - 200 - 300 * index,
+			start_y=const.SCREEN_HEIGHT - 200 - 310 * index,
 			color=champion.color,
 			font_name="Pokemon Solid",
 			width=200,
 			font_size=20) 
+	
+	def draw_champ_process_count(game, champion, index):
+		arcade.draw_text(
+			text=f"{str(game.process_count[champion.id])} processes",
+			align="center",
+			start_x=const.SCREEN_WIDTH - 320,
+			start_y=const.SCREEN_HEIGHT - 430 - 310 * index,
+			color=champion.color,
+			font_name="Pokemon Solid",
+			width=200,
+			font_size=10) 
 	
 	def draw_pokemon(champion, index, poke_sprite):
 		poke_sprite.draw()
 
 	for index, champion in enumerate(champions):
 		draw_champ_title(champion, index)
+		draw_champ_process_count(game, champion, index)
 		draw_pokemon(champion, index, canvas.big_poke_sprites[index])
 	
 class Canvas():

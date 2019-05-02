@@ -17,13 +17,14 @@ class Terrain(arcade.Sprite):
 
 
 class pokemon(arcade.Sprite):
-	def __init__(self, texture, location):
+	def __init__(self, texture, location, champion):
 		super().__init__()
 
 		self.textures.append(texture)
 		self.set_texture(0)
 		self.scale = 1.2
 		(self.center_x, self.center_y) = get_grid_coords(location)
+		self.champion = champion
 
 
 class Big_Pokemon(arcade.Sprite):

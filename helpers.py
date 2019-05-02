@@ -13,7 +13,3 @@ def get_grid_coords(index):
 	y = const.SCREEN_HEIGHT - 200 - int(
 	    index / const.GRID_X) * const.POKEMON_SIZE
 	return (x, y)
-
-
-def process_counter(game):
-	pass

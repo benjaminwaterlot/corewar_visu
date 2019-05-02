@@ -1,6 +1,6 @@
 import arcade
 from draw import canvas
-from helpers import fps_logger, process_counter
+from helpers import fps_logger
 import helpers
 import game_map
 import colors
@@ -24,6 +24,7 @@ class MyGame(arcade.Window):
 		arcade.set_background_color(colors.BROWN)
 		self.terrain_sprites = None
 		self.cycle = "0"
+		self.process_count = [1, 1, 1, 1]
 
 		width, height = self.get_size()
 		self.set_viewport(0, width, 0, height)
@@ -46,7 +47,7 @@ class MyGame(arcade.Window):
 		self.frame += 1
 		if (not self.frame % 30):
 			fps_logger(self, delta_time)
-			process_counter(self)
+			print(self.process_count)
 
 		updates = parse_next(const.SPEED)
 
@@ -82,11 +83,16 @@ class MyGame(arcade.Window):
 				process_champion = int(
 				    update[3]) if process_destination else None
 
+				# Si ce n'est pas une mort de process
 				if process_destination:
+					# Si le process vient de spawn
 					if process_id > len(self.pokemons_sprites):
 						texture = self.pokemon_textures[process_champion]
 						self.pokemons_sprites.append(
-						    sprites.pokemon(texture, process_destination))
+						    sprites.pokemon(texture, process_destination,
+						                    process_champion - 1))
+						self.process_count[process_champion - 1] += 1
+					# Si le process existait et se déplace
 					else:
 						if process_destination is None:
 							break

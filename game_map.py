@@ -10,7 +10,7 @@ def generate_process_sprites(game):
 
 	for process in game.pokemons:
 		sprite = sprites.pokemon(game.pokemon_textures[process['champion']],
-		                         process['location'])
+		                         process['location'], process['champion'] - 1)
 		process_sprites.append(sprite)
 
 	return process_sprites

@@ -1,3 +1,6 @@
+import arcade
+import colors
+
 # GENERAL
 SCREEN_WIDTH = 2560
 SCREEN_HEIGHT = 1440
@@ -16,3 +19,12 @@ POKEMON_SIZE = 24
 
 # SETTINGS
 SPEED = 2
+
+CHAMPIONS = [{
+    'pokemon': "resources/big_pokemons/dracofeu_big.png",
+    'color': colors.YELLOW
+},
+             {
+                 'pokemon': "resources/big_pokemons/florizarre_big.png",
+                 'color': arcade.color.GREEN_YELLOW
+             }]

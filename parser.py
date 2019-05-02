@@ -1,6 +1,70 @@
 import sys
+import objects
+import const
 
-# from textures import ENERGY, POKEMON, EMPTY
+
+def parse_start():
+	starting_map = None
+	processes = []
+	champions = []
+	line = sys.stdin.readline().rstrip()
+
+	while line != "":
+		print(line)
+		code = line[0]
+
+		if code == '*':
+			(_, _, player_id, _, _, _, player_name,
+			 *player_desc_raw) = line.split()
+
+			t = " ".join(player_desc_raw)
+
+			try:
+				player_desc = t[t.find('(') + 1:t.find(')')]
+			except:
+				player_desc = ""
+
+			champ_index = int(player_id.replace(',', "")) - 1
+			new_player = objects.Champion(
+			    id=champ_index,
+			    name=player_name.replace('"', ''),
+			    description=player_desc,
+			    process_count=1,
+			    color=const.CHAMPIONS[champ_index]['color'],
+			    pokemon=const.CHAMPIONS[champ_index]['pokemon'])
+			# new_player = {
+			#     'id': int(player_id.replace(',', "")),
+			#     'name': player_name.replace('"', ""),
+			#     'description': player_desc
+			# }
+			print(new_player)
+			champions.append(new_player)
+
+		# elif code == 'J':
+		# 	champions.append(line.split()[-1])
+
+		elif code == 'B':
+			starting_map = line[2:].split()
+			print(len(starting_map))
+
+		elif code == 'P':
+			(_, _, location, champion) = line.split()
+			processes.append({
+			    'champion': int(champion),
+			    'location': int(location),
+			    'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
+			})
+
+		line = sys.stdin.readline().rstrip()
+
+	print(champions)
+	print(processes)
+	return (starting_map, champions, processes)
+	# return {
+	#     'starting_map': starting_map,
+	#     'champions': champions,
+	#     'processes': processes
+	# }
 
 
 def parse_next(number_to_parse):
@@ -29,41 +93,3 @@ def parse_next(number_to_parse):
 
 	# print(cycle)
 	return cycle
-
-
-def parse_start():
-	starting_map = None
-	champions = []
-	processes = []
-	line = sys.stdin.readline().rstrip()
-
-	while line != "":
-		print(line)
-
-		if line[0] == 'J':
-			champions.append(line.split()[-1])
-
-		elif line[0] == 'B':
-			starting_map = line[2:].split()
-			print(len(starting_map))
-
-		elif line[0] == 'P':
-			(code, ref, location, champion) = line.split()
-			# pokemon = POKEMON.salameche if int(
-			#     champion) is 1 else POKEMON.bulbizarre
-			processes.append({
-			    'champion': int(champion),
-			    'location': int(location),
-			    'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
-			})
-
-		line = sys.stdin.readline().rstrip()
-
-	print(starting_map)
-	print(champions)
-	print(processes)
-	return {
-	    'starting_map': starting_map,
-	    'champions': champions,
-	    'processes': processes
-	}

@@ -1,4 +1,5 @@
 import arcade
+import const
 
 
 class ENERGY():
@@ -32,6 +33,18 @@ def load_pokemon_textures():
 	    "resources/empty.png", "resources/pokemons/salameche.png",
 	    "resources/pokemons/bulbizarre.png"
 	]
+	for pokemon in pokemons:
+		loaded.append(arcade.load_texture(pokemon))
+	return loaded
+
+
+def load_big_pokemon_textures():
+	loaded = []
+	# pokemons = [
+	#     "resources/big_pokemons/dracofeu_big.png",
+	#     "resources/big_pokemons/florizarre_big.png",
+	# ]
+	pokemons = [champion['pokemon'] for champion in const.CHAMPIONS]
 	for pokemon in pokemons:
 		loaded.append(arcade.load_texture(pokemon))
 	return loaded

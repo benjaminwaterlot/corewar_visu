@@ -47,7 +47,6 @@ class MyGame(arcade.Window):
 		self.frame += 1
 		if (not self.frame % 30):
 			fps_logger(self, delta_time)
-			print(self.process_count)
 
 		updates = parse_next(const.SPEED)
 
@@ -81,17 +80,21 @@ class MyGame(arcade.Window):
 				process_destination = None if update[2] == 'x' else int(
 				    update[2])
 				process_champion = int(
-				    update[3]) if process_destination else None
+				    update[3]) - 1 if process_destination else None
 
 				# Si ce n'est pas une mort de process
 				if process_destination:
 					# Si le process vient de spawn
 					if process_id > len(self.pokemons_sprites):
-						texture = self.pokemon_textures[process_champion]
+						texture = self.pokemon_textures[process_champion + 1]
 						self.pokemons_sprites.append(
-						    sprites.pokemon(texture, process_destination,
-						                    process_champion - 1))
-						self.process_count[process_champion - 1] += 1
+						    sprites.pokemon(
+						        helpers.get_random_pokemon(process_champion),
+						        process_destination, process_champion))
+						# self.pokemons_sprites.append(
+						#     sprites.pokemon(texture, process_destination,
+						#                     process_champion))
+						self.process_count[process_champion] += 1
 					# Si le process existait et se déplace
 					else:
 						if process_destination is None:
@@ -102,6 +105,8 @@ class MyGame(arcade.Window):
 				else:
 					if process_id <= len(self.pokemons_sprites):
 						self.pokemons_sprites[process_id - 1].alpha = 0
+			else:
+				print(update)
 
 	def on_key_press(self, key, modifiers):
 		if key == arcade.key.DOWN or key == arcade.key.UP:

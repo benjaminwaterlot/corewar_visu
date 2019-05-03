@@ -5,6 +5,11 @@ import const
 class ENERGY():
 	fire = 1
 	plant = 2
+	water = 3
+	electricity = 4
+
+
+# energies = ["fire", "plant", "water", "electricity"]
 
 
 class Pokemon():
@@ -19,7 +24,8 @@ def load_terrain_textures():
 	loaded = []
 	terrains = [
 	    "resources/empty.png", "resources/energies/fire.png",
-	    "resources/energies/plant.png"
+	    "resources/energies/plant.png", "resources/energies/water.png",
+	    "resources/energies/electricity.png"
 	]
 
 	for terrain in terrains:
@@ -27,23 +33,8 @@ def load_terrain_textures():
 	return loaded
 
 
-def load_pokemon_textures():
-	loaded = []
-	pokemons = [
-	    "resources/empty.png", "resources/pokemons/salameche.png",
-	    "resources/pokemons/bulbizarre.png"
-	]
-	for pokemon in pokemons:
-		loaded.append(arcade.load_texture(pokemon))
-	return loaded
-
-
 def load_big_pokemon_textures():
 	loaded = []
-	# pokemons = [
-	#     "resources/big_pokemons/dracofeu_big.png",
-	#     "resources/big_pokemons/florizarre_big.png",
-	# ]
 	pokemons = [champion['pokemon'] for champion in const.CHAMPIONS]
 	for pokemon in pokemons:
 		loaded.append(arcade.load_texture(pokemon))

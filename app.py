@@ -1,11 +1,11 @@
 import arcade
 from draw import canvas
 from helpers import fps_logger
+from parser import parse_next, parse_start
 import helpers
 import game_map
 import colors
 import const
-from parser import parse_next, parse_start
 import textures
 import sprites
 
@@ -31,10 +31,11 @@ class MyGame(arcade.Window):
 
 	def setup(self):
 		self.terrain_textures = textures.load_terrain_textures()
-		self.pokemon_textures = textures.load_pokemon_textures()
 		self.big_pokemon_textures = textures.load_big_pokemon_textures()
 
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
+		print("SELF.CHAMPIONS: \n", self.champions)
+		print("SELF.POKEMONS: \n", self.pokemons)
 		self.canvas = canvas.Canvas(self)
 		self.pokemons_sprites = game_map.generate_process_sprites(self)
 
@@ -84,17 +85,15 @@ class MyGame(arcade.Window):
 
 				# Si ce n'est pas une mort de process
 				if process_destination:
+
 					# Si le process vient de spawn
 					if process_id > len(self.pokemons_sprites):
-						texture = self.pokemon_textures[process_champion + 1]
 						self.pokemons_sprites.append(
 						    sprites.pokemon(
 						        helpers.get_random_pokemon(process_champion),
 						        process_destination, process_champion))
-						# self.pokemons_sprites.append(
-						#     sprites.pokemon(texture, process_destination,
-						#                     process_champion))
 						self.process_count[process_champion] += 1
+
 					# Si le process existait et se déplace
 					else:
 						if process_destination is None:
@@ -102,11 +101,15 @@ class MyGame(arcade.Window):
 						(x, y) = helpers.get_grid_coords(process_destination)
 						self.pokemons_sprites[process_id - 1].center_x = x
 						self.pokemons_sprites[process_id - 1].center_y = y
+
+				# Si c'est une mort de process:
 				else:
 					if process_id <= len(self.pokemons_sprites):
 						self.pokemons_sprites[process_id - 1].alpha = 0
+
+			# Si la ligne n'est pas reconnue
 			else:
-				print(update)
+				print(F"Unparsed line: {update}")
 
 	def on_key_press(self, key, modifiers):
 		if key == arcade.key.DOWN or key == arcade.key.UP:

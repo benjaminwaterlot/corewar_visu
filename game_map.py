@@ -3,14 +3,16 @@ import sprites
 import const
 import textures
 from helpers import get_grid_coords
+import helpers
 
 
 def generate_process_sprites(game):
 	process_sprites = arcade.SpriteList()
 
 	for process in game.pokemons:
-		sprite = sprites.pokemon(game.pokemon_textures[process['champion']],
-		                         process['location'], process['champion'] - 1)
+		sprite = sprites.pokemon(
+		    helpers.get_random_pokemon(process.champion - 1), process.location,
+		    process.champion - 1)
 		process_sprites.append(sprite)
 
 	return process_sprites
@@ -26,15 +28,17 @@ def generate_map(game):
 		owner = value['player']
 
 		if owner is not None:
-			if owner == 1:
-				Terrain = textures.ENERGY.fire
-			elif owner == 2:
-				Terrain = textures.ENERGY.plant
-			else:
+
+			# if owner == 1:
+			# 	Terrain = textures.ENERGY.fire
+			# elif owner == 2:
+			# 	Terrain = textures.ENERGY.plant
+			if owner not in [1, 2, 3, 4]:
 				raise ValueError(
 				    f"OWNER OF CASE `{index}` is `{owner}`, it is not known!")
+
 			energy = sprites.Terrain(
-			    textures=game.terrain_textures, Terrain=Terrain, x=x, y=y)
+			    textures=game.terrain_textures, Terrain=owner, x=x, y=y)
 			terrain_sprites.append(energy)
 
 		else:

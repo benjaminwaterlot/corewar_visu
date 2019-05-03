@@ -32,12 +32,9 @@ def parse_start():
 			    process_count=1,
 			    color=const.CHAMPIONS[champ_index]['color'],
 			    pokemon=const.CHAMPIONS[champ_index]['pokemon'])
-			# new_player = {
-			#     'id': int(player_id.replace(',', "")),
-			#     'name': player_name.replace('"', ""),
-			#     'description': player_desc
-			# }
-			print(new_player)
+
+			print("PLAYER ADDED TO THE ARENA: ", new_player, "\n")
+
 			champions.append(new_player)
 
 		# elif code == 'J':
@@ -49,22 +46,22 @@ def parse_start():
 
 		elif code == 'P':
 			(_, _, location, champion) = line.split()
-			processes.append({
-			    'champion': int(champion),
-			    'location': int(location),
-			    'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
-			})
+			new_process = objects.Process(
+			    champion=int(champion),
+			    location=int(location),
+			    pokemon=int(champion))
+			processes.append(new_process)
+			# processes.append({
+			#     'champion': int(champion),
+			#     'location': int(location),
+			#     'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
+			# })
 
 		line = sys.stdin.readline().rstrip()
 
 	print(champions)
 	print(processes)
 	return (starting_map, champions, processes)
-	# return {
-	#     'starting_map': starting_map,
-	#     'champions': champions,
-	#     'processes': processes
-	# }
 
 
 def parse_next(number_to_parse):

@@ -25,6 +25,7 @@ class MyGame(arcade.Window):
 		self.terrain_sprites = None
 		self.cycle = "0"
 		self.process_count = [1, 1, 1, 1]
+		self.last_live = [1, 0, 0, 0]
 
 		width, height = self.get_size()
 		self.set_viewport(0, width, 0, height)
@@ -32,6 +33,9 @@ class MyGame(arcade.Window):
 	def setup(self):
 		self.terrain_textures = textures.load_terrain_textures()
 		self.big_pokemon_textures = textures.load_big_pokemon_textures()
+
+		# LIVE SPRITES TO DISPLAY
+		self.live_sprites = arcade.SpriteList()
 
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
 		print("SELF.CHAMPIONS: \n", self.champions)
@@ -50,6 +54,8 @@ class MyGame(arcade.Window):
 			fps_logger(self, delta_time)
 
 		updates = parse_next(const.SPEED)
+
+		self.last_live = helpers.update_lives(self.last_live)
 
 		for raw_update in updates:
 			update = raw_update.split()
@@ -107,9 +113,19 @@ class MyGame(arcade.Window):
 					if process_id <= len(self.pokemons_sprites):
 						self.pokemons_sprites[process_id - 1].alpha = 0
 
+			elif update_type == 'L':
+				player = int(update[1])
+				# self.last_live[player - 1] = 1
+				self.live_sprites.append(
+				    sprites.Live(player, len(self.live_sprites)))
+				if len(self.live_sprites) > 37:
+					self.live_sprites[0].kill()
+					self.live_sprites.move(0, 32)
+				print(len(self.live_sprites))
+
 			# Si la ligne n'est pas reconnue
 			else:
-				print(F"Unparsed line: {update}")
+				print(F"WHAT IS THIS UNPARSED THING ? {update}")
 
 	def on_key_press(self, key, modifiers):
 		if key == arcade.key.DOWN or key == arcade.key.UP:
@@ -128,6 +144,7 @@ class MyGame(arcade.Window):
 		self.canvas.draw_canvas()
 		self.terrain_sprites.draw()
 		self.pokemons_sprites.draw()
+		self.live_sprites.draw()
 
 
 def main():

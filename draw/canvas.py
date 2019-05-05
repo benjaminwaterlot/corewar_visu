@@ -10,15 +10,20 @@ def draw_champions(game:MyGame, canvas):
 	champions = game.champions
 
 	def draw_champ_title(champion, index):
+		name_len = len(champion.name)
+		name_size = 20
+		if (name_len > 13):
+			name_size -= (name_len - 13) / 1.6
+
 		arcade.draw_text(
 			text=champion.name,
 			align="center",
-			start_x=const.SCREEN_WIDTH - 320,
+			start_x=const.SCREEN_WIDTH - 370,
 			start_y=const.SCREEN_HEIGHT - 200 - 310 * index,
 			color=champion.color,
 			font_name="Pokemon Solid",
-			width=200,
-			font_size=20) 
+			width=300,
+			font_size=name_size) 
 	
 	def draw_champ_process_count(game, champion, index):
 		arcade.draw_text(
@@ -45,7 +50,7 @@ class Canvas():
 		self.big_poke_textures = textures.load_big_pokemon_textures()
 		self.big_poke_sprites = arcade.SpriteList()
 
-		for index, champion in enumerate(self.game.champions):
+		for index, _ in enumerate(self.game.champions):
 			coords = (const.SCREEN_WIDTH - 250, const.SCREEN_HEIGHT - 300 - 300 * index)
 			self.big_poke_sprites.append(sprites.Big_Pokemon(self.big_poke_textures[index], coords))
 

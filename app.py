@@ -24,6 +24,7 @@ class MyGame(arcade.Window):
 		arcade.set_background_color(colors.BROWN)
 
 		self.cycle = "0"
+		self.last_speed = 0
 		self.process_count = [1, 1, 1, 1]
 		self.last_live = [1, 0, 0, 0]
 
@@ -37,34 +38,30 @@ class MyGame(arcade.Window):
 		self.live_sprites = arcade.SpriteList()
 
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
-		print(self.starting_map)
 
 		self.canvas = canvas.Canvas(self)
 		self.pokemons_sprites = game_map.generate_process_sprites(self)
 
 		self.terrain_owners = [
-		    int(case) if case.isdigit() else None for case in self.starting_map
+		    int(case) if case.isdigit() else 0 for case in self.starting_map
 		]
 
 		# SET UP THE 4 TERRAIN SPRITE LISTS
-		self.terrain_sprites = [
-		    arcade.SpriteList() for champion in self.champions
-		]
+		self.terrain_sprites = [arcade.SpriteList() for _ in self.champions]
+
 		# FILL THEM
 		for champion, sprite_list in enumerate(self.terrain_sprites):
 			for location in range(0, 4096):
 				(x, y) = helpers.get_grid_coords(location)
 				sprite_list.append(sprites.Terrain(champion + 1, x, y, False))
 		# ADAPT THEM TO THE STARTING MAP
-
 		for idx, bit in enumerate(self.terrain_owners):
-			if isinstance(bit, int):
+			if bit > 0:
 				self.terrain_sprites[bit - 1][idx].alpha = 255
-
-		print(self.terrain_sprites)
 
 	def on_update(self, delta_time):
 		self.frame += 1
+
 		if (not self.frame % 30):
 			fps_logger(self, delta_time)
 
@@ -93,8 +90,6 @@ class MyGame(arcade.Window):
 					    f"ERROR in cycle {self.cycle}: CHAMPION's TEXTURE IS NONETYPE, at case {location}"
 					)
 				for index in range(location, location + 4):
-					# self.terrain_sprites[index % const.MAP_SIZE].set_texture(
-					#     champion_on_case)
 					champ_ref = champion_on_case - 1
 					case = index % const.MAP_SIZE
 					for i, champion in enumerate(self.champions):
@@ -145,7 +140,15 @@ class MyGame(arcade.Window):
 				print(F"WHAT IS THIS UNPARSED THING ? {update}")
 
 	def on_key_press(self, key, modifiers):
-		if key in range(48, 57 + 1):
+		print(key)
+		if key in [arcade.key.SPACE, 48]:
+			if const.SPEED > 0:
+				self.last_speed = const.SPEED
+				const.SPEED = 0
+			else:
+				const.SPEED = self.last_speed
+
+		elif key in range(48, 57 + 1):
 			value = key - 48
 			const.SPEED = value
 

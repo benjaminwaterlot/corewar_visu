@@ -1,5 +1,6 @@
 import arcade
 import colors
+import textures
 
 # GENERAL
 SCREEN_WIDTH = 2560
@@ -20,13 +21,16 @@ POKEMON_SIZE = 24
 # SETTINGS
 SPEED = 2
 
+# CONTENT
+TERRAIN_TEXTURES = textures.load_terrain_textures()
+
 CHAMPIONS = [{
 	'pokemons': [
 		arcade.load_texture(f"resources/fire/tile{format(ref, '03d')}.png")
 		for ref in [3, 4, 5, 79, 80, 59, 60, 130, 140, 160, 161, 162]
 	],
 	'pokemon': "resources/fire/big.png",
-	'energy': "resources/fire/energy.png",
+	'energy': arcade.load_texture("resources/fire/energy.png"),
 	'live':
 	arcade.load_texture("resources/fire/live.png"),
 	'color':
@@ -39,7 +43,7 @@ CHAMPIONS = [{
 	for ref in [0, 1, 2, 9, 10, 126, 157, 159]
 	],
 	'pokemon': "resources/plant/big.png",
-	'energy': "resources/plant/energy.png",
+	'energy': arcade.load_texture("resources/plant/energy.png"),
 	'live':
 	arcade.load_texture("resources/plant/live.png"),
 	'color':
@@ -52,7 +56,7 @@ CHAMPIONS = [{
 	for ref in [6, 7, 8, 88, 89, 119, 120, 134, 135]
 	],
 	'pokemon': "resources/water/big.png",
-	'energy': "resources/water/energy.png",
+	'energy': arcade.load_texture("resources/water/energy.png"),
 	'live':
 	arcade.load_texture("resources/water/live.png"),
 	'color':
@@ -65,7 +69,7 @@ CHAMPIONS = [{
 	for ref in [24, 26, 177, 185, 187, 213, 247, 322, 323]
 	],
 	'pokemon': "resources/electricity/big.png",
-	'energy': "resources/electricity/energy.png",
+	'energy': arcade.load_texture("resources/electricity/energy.png"),
 	'live':
 	arcade.load_texture("resources/electricity/live.png"),
 	'color':

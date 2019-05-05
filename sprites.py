@@ -5,33 +5,32 @@ from helpers import get_grid_coords
 
 
 class Terrain(arcade.Sprite):
-	def __init__(self, textures, Terrain, x, y):
+	def __init__(self, ref, x, y, visible=True):
 		super().__init__()
 
-		for texture in textures:
+		for texture in const.TERRAIN_TEXTURES:
 			self.textures.append(texture)
 
 		self.id = id
-		self.set_texture(Terrain)
+		self.set_texture(ref)
 		self.scale = 1
 		self.center_x = x
 		self.center_y = y
+		self.alpha = 255 if visible else 0
 
 
 class Live(arcade.Sprite):
 	def __init__(self, champion, live_len):
 		super().__init__()
 
-		self.textures.append(const.CHAMPIONS[champion - 1]['live'])
+		self.textures.append(const.CHAMPIONS[champion - 1]['energy'])
 		self.set_texture(0)
 
-		randomizer = random.randint(0, 1200)
-		little_randomizer = random.randint(0, 20)
-
 		self.scale = 1
-		(
-		    self.center_x, self.center_y
-		) = const.SCREEN_WIDTH - 400, const.SCREEN_HEIGHT - 100 - live_len * 32
+
+		self.center_x = const.SCREEN_WIDTH - 400
+		self.center_y = const.SCREEN_HEIGHT - 100 - live_len * 16
+
 		self.champion = champion
 
 
@@ -41,7 +40,7 @@ class pokemon(arcade.Sprite):
 
 		self.textures.append(texture)
 		self.set_texture(0)
-		self.scale = 1.4
+		self.scale = 1.2
 		(self.center_x, self.center_y) = get_grid_coords(location)
 		self.champion = champion
 

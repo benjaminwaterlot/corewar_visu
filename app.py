@@ -22,7 +22,7 @@ class MyGame(arcade.Window):
 		super().__init__(self.SCREEN_WIDTH, self.SCREEN_HEIGHT,
 		                 self.SCREEN_TITLE)
 		arcade.set_background_color(colors.BROWN)
-		self.terrain_sprites = None
+
 		self.cycle = "0"
 		self.process_count = [1, 1, 1, 1]
 		self.last_live = [1, 0, 0, 0]
@@ -31,22 +31,37 @@ class MyGame(arcade.Window):
 		self.set_viewport(0, width, 0, height)
 
 	def setup(self):
-		self.terrain_textures = textures.load_terrain_textures()
 		self.big_pokemon_textures = textures.load_big_pokemon_textures()
 
 		# LIVE SPRITES TO DISPLAY
 		self.live_sprites = arcade.SpriteList()
 
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
-		print("SELF.CHAMPIONS: \n", self.champions)
-		print("SELF.POKEMONS: \n", self.pokemons)
+		print(self.starting_map)
+
 		self.canvas = canvas.Canvas(self)
 		self.pokemons_sprites = game_map.generate_process_sprites(self)
 
 		self.terrain_owners = [
 		    int(case) if case.isdigit() else None for case in self.starting_map
 		]
-		self.terrain_sprites = game_map.generate_map(self)
+
+		# SET UP THE 4 TERRAIN SPRITE LISTS
+		self.terrain_sprites = [
+		    arcade.SpriteList() for champion in self.champions
+		]
+		# FILL THEM
+		for champion, sprite_list in enumerate(self.terrain_sprites):
+			for location in range(0, 4096):
+				(x, y) = helpers.get_grid_coords(location)
+				sprite_list.append(sprites.Terrain(champion + 1, x, y, False))
+		# ADAPT THEM TO THE STARTING MAP
+
+		for idx, bit in enumerate(self.terrain_owners):
+			if isinstance(bit, int):
+				self.terrain_sprites[bit - 1][idx].alpha = 255
+
+		print(self.terrain_sprites)
 
 	def on_update(self, delta_time):
 		self.frame += 1
@@ -78,9 +93,13 @@ class MyGame(arcade.Window):
 					    f"ERROR in cycle {self.cycle}: CHAMPION's TEXTURE IS NONETYPE, at case {location}"
 					)
 				for index in range(location, location + 4):
-					self.terrain_sprites[index % const.MAP_SIZE].set_texture(
-					    champion_on_case)
-					pass
+					# self.terrain_sprites[index % const.MAP_SIZE].set_texture(
+					#     champion_on_case)
+					champ_ref = champion_on_case - 1
+					case = index % const.MAP_SIZE
+					for i, champion in enumerate(self.champions):
+						self.terrain_sprites[i][
+						    case].alpha = 255 if i == champ_ref else 0
 
 			elif update_type == 'P':
 				process_id = int(update[1])
@@ -115,20 +134,26 @@ class MyGame(arcade.Window):
 
 			elif update_type == 'L':
 				player = int(update[1])
-				# self.last_live[player - 1] = 1
 				self.live_sprites.append(
 				    sprites.Live(player, len(self.live_sprites)))
-				if len(self.live_sprites) > 37:
+				if len(self.live_sprites) > 74:
 					self.live_sprites[0].kill()
-					self.live_sprites.move(0, 32)
-				print(len(self.live_sprites))
+					self.live_sprites.move(0, 16)
 
 			# Si la ligne n'est pas reconnue
 			else:
 				print(F"WHAT IS THIS UNPARSED THING ? {update}")
 
 	def on_key_press(self, key, modifiers):
-		if key == arcade.key.DOWN or key == arcade.key.UP:
+		if key in range(48, 57 + 1):
+			value = key - 48
+			const.SPEED = value
+
+		elif key in range(65456, 65465 + 1):
+			value = key - 65456
+			const.SPEED = value
+
+		elif key == arcade.key.DOWN or key == arcade.key.UP:
 			new_speed = const.SPEED
 			if key == arcade.key.DOWN:
 				new_speed -= 1
@@ -142,9 +167,10 @@ class MyGame(arcade.Window):
 	def on_draw(self):
 		arcade.start_render()
 		self.canvas.draw_canvas()
-		self.terrain_sprites.draw()
-		self.pokemons_sprites.draw()
 		self.live_sprites.draw()
+		for terrain in self.terrain_sprites:
+			terrain.draw()
+		self.pokemons_sprites.draw()
 
 
 def main():

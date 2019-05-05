@@ -37,9 +37,6 @@ def parse_start():
 
 			champions.append(new_player)
 
-		# elif code == 'J':
-		# 	champions.append(line.split()[-1])
-
 		elif code == 'B':
 			starting_map = line[2:].split()
 			print(len(starting_map))
@@ -51,11 +48,6 @@ def parse_start():
 			    location=int(location),
 			    pokemon=int(champion))
 			processes.append(new_process)
-			# processes.append({
-			#     'champion': int(champion),
-			#     'location': int(location),
-			#     'pokemon': int(champion)  #TODO = ASSIGNER UN VRAI POKEMON ICI
-			# })
 
 		line = sys.stdin.readline().rstrip()
 
@@ -65,6 +57,9 @@ def parse_start():
 
 
 def parse_next(number_to_parse):
+	if number_to_parse == 0:
+		return []
+
 	init = sys.stdin.readline().rstrip()
 
 	if init == "":
@@ -74,11 +69,7 @@ def parse_next(number_to_parse):
 		raise ValueError(f"Unexpected input ! [{init}]")
 
 	cycle = [init]
-	# for i in range(number_to_parse):
-	# 	data = sys.stdin.readline().rstrip()
-	# 	while data != "":
-	# 		cycle.append(data)
-	# 		data = sys.stdin.readline().rstrip()
+
 	for line in sys.stdin:
 		if line == "\n":
 			number_to_parse -= 1
@@ -88,5 +79,4 @@ def parse_next(number_to_parse):
 				continue
 		cycle.append(line.rstrip())
 
-	# print(cycle)
 	return cycle

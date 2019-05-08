@@ -9,8 +9,6 @@ import const
 import textures
 import sprites
 
-from threading import Thread
-
 
 class MyGame(arcade.Window):
 	SCREEN_WIDTH = const.SCREEN_WIDTH
@@ -34,9 +32,14 @@ class MyGame(arcade.Window):
 
 	def setup(self):
 		self.big_pokemon_textures = textures.load_big_pokemon_textures()
+		self.updates = 0
+		self.parsed = 0
 
 		# LIVE SPRITES TO DISPLAY
 		self.live_sprites = arcade.SpriteList()
+
+		# SPRITELIST OF ENDGAME
+		self.poke_file = arcade.SpriteList()
 
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
 
@@ -66,91 +69,106 @@ class MyGame(arcade.Window):
 
 		if (not self.frame % 60):
 			fps_logger(self, delta_time)
+			print(F"RECEIVED {self.parsed} LINES")
+			print(F"UPDATED {self.updates} LINES")
 
-		updates = parse_next(const.SPEED)
+		if self.status == const.STATUS.IN_GAME:
+			updates = parse_next(const.SPEED, self)
 
-		self.last_live = helpers.update_lives(self.last_live)
+			self.last_live = helpers.update_lives(self.last_live)
 
-		for raw_update in updates:
-			if raw_update == "":
-				continue
-			update = raw_update.split()
-			update_type = update[0]
+			for raw_update in updates:
+				if raw_update == "":
+					continue
+				update = raw_update.split()
+				update_type = update[0]
+				self.updates += 1
+				if update_type == 'C':
+					self.cycle = update[1]
 
-			if update_type == 'C':
-				self.cycle = update[1]
+				elif update_type == 'M':
+					location = int(update[1])
+					champion = int(update[2])
 
-			elif update_type == 'M':
-				location = int(update[1])
-				champion = int(update[2])
+					if self.terrain_owners[location] == champion:
+						break
 
-				if self.terrain_owners[location] == champion:
-					break
+					self.terrain_owners[location] = champion
+					champion_on_case = self.terrain_owners[location]
+					if champion_on_case == None:
+						raise ValueError(
+						    f"ERROR in cycle {self.cycle}: CHAMPION's TEXTURE IS NONETYPE, at case {location}"
+						)
+					for index in range(location, location + 4):
+						champ_ref = champion_on_case - 1
+						case = index % const.MAP_SIZE
+						for i, champion in enumerate(self.champions):
+							self.terrain_sprites[i][
+							    case].alpha = 255 if i == champ_ref else 0
 
-				self.terrain_owners[location] = champion
-				champion_on_case = self.terrain_owners[location]
-				if champion_on_case == None:
-					raise ValueError(
-					    f"ERROR in cycle {self.cycle}: CHAMPION's TEXTURE IS NONETYPE, at case {location}"
-					)
-				for index in range(location, location + 4):
-					champ_ref = champion_on_case - 1
-					case = index % const.MAP_SIZE
-					for i, champion in enumerate(self.champions):
-						self.terrain_sprites[i][
-						    case].alpha = 255 if i == champ_ref else 0
+				elif update_type == 'P':
+					process_id = int(update[1])
+					process_destination = None if update[2] == 'x' else int(
+					    update[2])
+					process_champion = int(
+					    update[3]) - 1 if process_destination else None
 
-			elif update_type == 'P':
-				process_id = int(update[1])
-				process_destination = None if update[2] == 'x' else int(
-				    update[2])
-				process_champion = int(
-				    update[3]) - 1 if process_destination else None
+					# Si ce n'est pas une mort de process
+					if process_destination:
 
-				# Si ce n'est pas une mort de process
-				if process_destination:
+						# Si le process vient de spawn
+						if process_id > len(self.pokemons_sprites):
+							self.pokemons_sprites.append(
+							    sprites.pokemon(
+							        helpers.get_random_pokemon(
+							            process_champion), process_destination,
+							        process_champion))
+							self.process_count[process_champion] += 1
 
-					# Si le process vient de spawn
-					if process_id > len(self.pokemons_sprites):
-						self.pokemons_sprites.append(
-						    sprites.pokemon(
-						        helpers.get_random_pokemon(process_champion),
-						        process_destination, process_champion))
-						self.process_count[process_champion] += 1
+						# Si le process existait et se déplace
+						else:
+							if process_destination is None:
+								break
+							(x,
+							 y) = helpers.get_grid_coords(process_destination)
+							self.pokemons_sprites[process_id - 1].center_x = x
+							self.pokemons_sprites[process_id - 1].center_y = y
 
-					# Si le process existait et se déplace
+					# Si c'est une mort de process:
 					else:
-						if process_destination is None:
-							break
-						(x, y) = helpers.get_grid_coords(process_destination)
-						self.pokemons_sprites[process_id - 1].center_x = x
-						self.pokemons_sprites[process_id - 1].center_y = y
+						if process_id <= len(self.pokemons_sprites):
+							self.pokemons_sprites[process_id - 1].alpha = 0
 
-				# Si c'est une mort de process:
-				else:
-					if process_id <= len(self.pokemons_sprites):
-						self.pokemons_sprites[process_id - 1].alpha = 0
+				elif update_type == 'L':
+					player = int(update[1])
+					self.live_sprites.append(
+					    sprites.Live(player, len(self.live_sprites)))
+					if len(self.live_sprites) > 74:
+						self.live_sprites[0].kill()
+						self.live_sprites.move(0, 16)
 
-			elif update_type == 'L':
-				player = int(update[1])
-				self.live_sprites.append(
-				    sprites.Live(player, len(self.live_sprites)))
-				if len(self.live_sprites) > 74:
-					self.live_sprites[0].kill()
-					self.live_sprites.move(0, 16)
+				elif update_type[0] == 'D':
+					print(F"New cycle_to_die : {update[1]}")
 
-			elif update_type == 'D':
-				print(F"New cycle_to_die : {update[1]}")
+				elif update_type == "Contestant":
+					winner_ref = int(update[1][0])
+					winner = self.champions[winner_ref - 1]
+					print(F"WINNER IS player {winner.name}")
+					self.champions[winner_ref - 1].victorious = True
+					self.end_canvas = end_canvas.EndCanvas(
+					    self, winner_ref, winner)
 
-			elif update_type == "Contestant":
-				print(update)
-				winner_ref = int(update[1][0])
-				winner = self.champions[winner_ref - 1]
-				print(F"WINNER IS player {winner.name}")
-				self.champions[winner_ref - 1].victorious = True
-				self.end_canvas = end_canvas.EndCanvas(self, winner_ref,
-				                                       winner)
-				self.status = const.STATUS.ENDED
+					for index in range(0, 200):
+						self.poke_file.append(
+						    sprites.EndPokemon(
+						        helpers.get_random_pokemon(winner_ref - 1),
+						        index * 40, 500))
+
+					self.status = const.STATUS.ENDED
+
+		# IF GAME HAS ENDED
+		elif self.status == const.STATUS.ENDED:
+			self.poke_file.move(-1, 0)
 
 	def on_key_press(self, key, modifiers):
 		if key in [arcade.key.SPACE, 48]:
@@ -190,6 +208,7 @@ class MyGame(arcade.Window):
 
 		elif self.status == const.STATUS.ENDED:
 			self.end_canvas.draw_canvas()
+			self.poke_file.draw()
 
 
 def main():

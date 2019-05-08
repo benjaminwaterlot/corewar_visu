@@ -19,7 +19,7 @@ GRID_X = 85
 POKEMON_SIZE = 24
 
 # SETTINGS
-SPEED = 2
+SPEED = 1
 
 # ENUMS
 class STATUS():
@@ -35,6 +35,7 @@ CHAMPIONS = [{
 		for ref in [3, 4, 5, 79, 80, 59, 60, 130, 140, 160, 161, 162]
 	],
 	'pokemon': "resources/fire/big.png",
+	'big_pokemon': "resources/fire/very_big.png",
 	'energy': arcade.load_texture("resources/fire/energy.png"),
 	'live':
 	arcade.load_texture("resources/fire/live.png"),
@@ -48,6 +49,7 @@ CHAMPIONS = [{
 	for ref in [0, 1, 2, 9, 10, 126, 157, 159]
 	],
 	'pokemon': "resources/plant/big.png",
+	'big_pokemon': "resources/plant/very_big.png",
 	'energy': arcade.load_texture("resources/plant/energy.png"),
 	'live':
 	arcade.load_texture("resources/plant/live.png"),
@@ -61,6 +63,7 @@ CHAMPIONS = [{
 	for ref in [6, 7, 8, 88, 89, 119, 120, 134, 135]
 	],
 	'pokemon': "resources/water/big.png",
+	'big_pokemon': "resources/water/very_big.png",
 	'energy': arcade.load_texture("resources/water/energy.png"),
 	'live':
 	arcade.load_texture("resources/water/live.png"),
@@ -74,6 +77,7 @@ CHAMPIONS = [{
 	for ref in [24, 26, 177, 185, 187, 213, 247, 322, 323]
 	],
 	'pokemon': "resources/electricity/big.png",
+	'big_pokemon': "resources/electricity/very_big.png",
 	'energy': arcade.load_texture("resources/electricity/energy.png"),
 	'live':
 	arcade.load_texture("resources/electricity/live.png"),

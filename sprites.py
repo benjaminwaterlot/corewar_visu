@@ -45,6 +45,16 @@ class pokemon(arcade.Sprite):
 		self.champion = champion
 
 
+class EndPokemon(arcade.Sprite):
+	def __init__(self, texture, x, y):
+		super().__init__()
+
+		self.textures.append(texture)
+		self.set_texture(0)
+		self.scale = 1.2
+		(self.center_x, self.center_y) = (x, y)
+
+
 class Big_Pokemon(arcade.Sprite):
 	def __init__(self, texture, coords):
 		super().__init__()

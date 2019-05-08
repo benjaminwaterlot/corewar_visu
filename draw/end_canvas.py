@@ -11,11 +11,15 @@ def get_champion_infos(game, champion: Champion, winner: Champion):
 
 	default_y = const.SCREEN_HEIGHT / 2
 	# y = default_y + 100 if is_winner else default_y
-	x = const.SCREEN_WIDTH / 2 - 150 * len(game.champions) + champion.id * 300
-	scale = 1 if is_winner else .5
+	x = const.SCREEN_WIDTH / 2 - 200 * len(game.champions) + champion.id * 400
+	# scale = 1 if is_winner else .5
+	scale = 1
+	pokemon = champion.big_pokemon if is_winner else champion.pokemon
 
-	return arcade.Sprite(
-	    champion.pokemon, scale=scale, center_x=x, center_y=default_y)
+	poke_sprite = arcade.Sprite(
+	    pokemon, scale=scale, center_x=x, center_y=default_y)
+
+	return [poke_sprite]
 
 
 class EndCanvas():
@@ -24,8 +28,8 @@ class EndCanvas():
 		self.winner = winner
 		self.game = game
 
-		self.pokemons = [
-		    get_poke_sprite(game, champ, winner) for champ in game.champions
+		self.champions_infos = [
+		    get_champion_infos(game, champ, winner) for champ in game.champions
 		]
 
 	def draw_canvas(self):
@@ -37,7 +41,7 @@ class EndCanvas():
 		    color=self.winner.color,
 		    font_name="Pokemon Solid",
 		    width=1200,
-		    font_size=36),
+		    font_size=36)
 
 		arcade.draw_text(
 		    text=self.winner.name,
@@ -47,7 +51,8 @@ class EndCanvas():
 		    color=self.winner.color,
 		    font_name="Pokemon Solid",
 		    width=1200,
-		    font_size=64),
+		    font_size=64)
 
-		for poke in self.pokemons:
-			poke.draw()
+		for champion_infos in self.champions_infos:
+			for champion_info in champion_infos:
+				champion_info.draw()

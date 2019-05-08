@@ -31,7 +31,8 @@ def parse_start():
 			    description=player_desc,
 			    process_count=1,
 			    color=const.CHAMPIONS[champ_index]['color'],
-			    pokemon=const.CHAMPIONS[champ_index]['pokemon'])
+			    pokemon=const.CHAMPIONS[champ_index]['pokemon'],
+			    big_pokemon=const.CHAMPIONS[champ_index]['big_pokemon'])
 
 			print("PLAYER ADDED TO THE ARENA: ", new_player, "\n")
 
@@ -56,7 +57,7 @@ def parse_start():
 	return (starting_map, champions, processes)
 
 
-def parse_next(number_to_parse):
+def parse_next(number_to_parse, game):
 	if number_to_parse == 0:
 		return []
 
@@ -67,14 +68,21 @@ def parse_next(number_to_parse):
 		return cycle
 
 	for line in sys.stdin:
+		# print(F"{line.rstrip()}")
+
+		if line[0] == "D":
+			print(F"CYCLE TO DIE {line}")
+
 		if line[:10] == "Contestant":
 			return [line]
+
 		if line == "\n":
 			number_to_parse -= 1
-			if number_to_parse <= 0:
-				break
-			else:
-				continue
+		if line == "\n" and number_to_parse < 0:
+			break
+		if line == "\n" and number_to_parse >= 0:
+			continue
+		game.parsed += 1
 		cycle.append(line.rstrip())
 
 	# print(cycle)

@@ -6,6 +6,7 @@ class Champion():
 		self.process_count = process_count
 		self.color = color
 		self.pokemon = pokemon
+		self.victorious = False
 
 
 class Process():

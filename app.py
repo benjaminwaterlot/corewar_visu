@@ -1,5 +1,5 @@
 import arcade
-from draw import canvas
+from draw import canvas, end_canvas
 from helpers import fps_logger
 from parser import parse_next, parse_start
 import helpers
@@ -24,6 +24,7 @@ class MyGame(arcade.Window):
 		arcade.set_background_color(colors.BROWN)
 
 		self.cycle = "0"
+		self.status = const.STATUS.IN_GAME
 		self.last_speed = 0
 		self.process_count = [1, 1, 1, 1]
 		self.last_live = [1, 0, 0, 0]
@@ -40,6 +41,7 @@ class MyGame(arcade.Window):
 		(self.starting_map, self.champions, self.pokemons) = parse_start()
 
 		self.canvas = canvas.Canvas(self)
+		self.end_canvas = None
 		self.pokemons_sprites = game_map.generate_process_sprites(self)
 
 		self.terrain_owners = [
@@ -62,7 +64,7 @@ class MyGame(arcade.Window):
 	def on_update(self, delta_time):
 		self.frame += 1
 
-		if (not self.frame % 30):
+		if (not self.frame % 60):
 			fps_logger(self, delta_time)
 
 		updates = parse_next(const.SPEED)
@@ -70,6 +72,8 @@ class MyGame(arcade.Window):
 		self.last_live = helpers.update_lives(self.last_live)
 
 		for raw_update in updates:
+			if raw_update == "":
+				continue
 			update = raw_update.split()
 			update_type = update[0]
 
@@ -135,12 +139,20 @@ class MyGame(arcade.Window):
 					self.live_sprites[0].kill()
 					self.live_sprites.move(0, 16)
 
-			# Si la ligne n'est pas reconnue
-			else:
-				print(F"WHAT IS THIS UNPARSED THING ? {update}")
+			elif update_type == 'D':
+				print(F"New cycle_to_die : {update[1]}")
+
+			elif update_type == "Contestant":
+				print(update)
+				winner_ref = int(update[1][0])
+				winner = self.champions[winner_ref - 1]
+				print(F"WINNER IS player {winner.name}")
+				self.champions[winner_ref - 1].victorious = True
+				self.end_canvas = end_canvas.EndCanvas(self, winner_ref,
+				                                       winner)
+				self.status = const.STATUS.ENDED
 
 	def on_key_press(self, key, modifiers):
-		print(key)
 		if key in [arcade.key.SPACE, 48]:
 			if const.SPEED > 0:
 				self.last_speed = const.SPEED
@@ -169,11 +181,15 @@ class MyGame(arcade.Window):
 
 	def on_draw(self):
 		arcade.start_render()
-		self.canvas.draw_canvas()
-		self.live_sprites.draw()
-		for terrain in self.terrain_sprites:
-			terrain.draw()
-		self.pokemons_sprites.draw()
+		if self.status == const.STATUS.IN_GAME:
+			self.canvas.draw_canvas()
+			self.live_sprites.draw()
+			for terrain in self.terrain_sprites:
+				terrain.draw()
+			self.pokemons_sprites.draw()
+
+		elif self.status == const.STATUS.ENDED:
+			self.end_canvas.draw_canvas()
 
 
 def main():

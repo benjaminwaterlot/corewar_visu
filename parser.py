@@ -62,15 +62,13 @@ def parse_next(number_to_parse):
 
 	init = sys.stdin.readline().rstrip()
 
-	if init == "":
-		print("GAME ENDED")
-		exit(0)
-	if init[0] != 'C':
-		raise ValueError(f"Unexpected input ! [{init}]")
-
 	cycle = [init]
+	if init[:10] == "Contestant":
+		return cycle
 
 	for line in sys.stdin:
+		if line[:10] == "Contestant":
+			return [line]
 		if line == "\n":
 			number_to_parse -= 1
 			if number_to_parse <= 0:
@@ -79,4 +77,5 @@ def parse_next(number_to_parse):
 				continue
 		cycle.append(line.rstrip())
 
+	# print(cycle)
 	return cycle

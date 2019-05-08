@@ -21,6 +21,11 @@ POKEMON_SIZE = 24
 # SETTINGS
 SPEED = 2
 
+# ENUMS
+class STATUS():
+	IN_GAME = 0
+	ENDED = 1
+
 # CONTENT
 TERRAIN_TEXTURES = textures.load_terrain_textures()
 
